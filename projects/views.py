@@ -32,13 +32,16 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CertifyingInstitutionViewSet(viewsets.ModelViewSet):
     queryset = CertifyingInstitution.objects.all()
     serializer_class = CertifyingInstitutionSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CertificateViewSet(viewsets.ModelViewSet):
     queryset = Certificate.objects.all()
     serializer_class = CertificateSerializer
+    permission_classes = [IsAuthenticated]
