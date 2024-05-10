@@ -1,3 +1,8 @@
+from django.shortcuts import render
+
+# Create your views here.
+
+
 from rest_framework import viewsets
 from .models import Profile, Project, CertifyingInstitution, Certificate
 from .serializers import (
@@ -6,13 +11,18 @@ from .serializers import (
     ProfileSerializer,
     ProjectSerializer,
 )
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 from django.shortcuts import render
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_permissions(self):
         if self.request.method == "GET":
@@ -23,9 +33,15 @@ class ProfileViewSet(viewsets.ModelViewSet):
         if request.method == "GET":
             profile = Profile.objects.get(id=kwargs["pk"])
 
-            context = {"profile": profile, "projects": profile.projects.all()}
-
-            return render(request, "profile_detail.html", context)
+            return render(
+                request,
+                "profile_detail.html",
+                {
+                    "profile": profile,
+                    "certificates": profile.certificates.all(),
+                    "projects": profile.projects.all(),
+                },
+            )
         return super().retrieve(request, *args, **kwargs)
 
 
